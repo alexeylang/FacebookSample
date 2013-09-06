@@ -6,13 +6,13 @@
 //
 //  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 //  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-//  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer 
-//  in the documentation and/or other materials provided with the distribution. Neither the name of the Double Encore Inc. nor the names of its 
+//  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
+//  in the documentation and/or other materials provided with the distribution. Neither the name of the Double Encore Inc. nor the names of its
 //  contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
-//  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS 
-//  BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
-//  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+//  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+//  BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+//  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 //  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
@@ -30,7 +30,7 @@
 #import "DEFacebookGradientView.h"
 #import "UIDevice+DEFacebookComposeViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import <FacebookSDK/FacebookSDK.h>
+#import "FacebookSDK.h"
 
 #import <Social/Social.h>
 
@@ -129,7 +129,7 @@ enum {
         self = [(DEFacebookComposeViewController*)[SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook] retain];
         return self;
     }
-    
+
     self = [super init];
     if (self) {
         [self facebookComposeViewControllerInit];
@@ -183,11 +183,11 @@ enum {
     [_attachment2ImageView release], _attachment2ImageView = nil;
     [_attachment3ImageView release], _attachment3ImageView = nil;
     [_characterCountLabel release], _characterCountLabel = nil;
-    
+
         // Public
     [_completionHandler release], _completionHandler = nil;
     [_customParameters release], _customParameters = nil;
-    
+
         // Private
     [_text release], _text = nil;
     [_images release], _images = nil;
@@ -198,9 +198,9 @@ enum {
     [_gradientView release], _gradientView = nil;
     [_accountPickerView release], _accountPickerView = nil;
     [_accountPickerPopoverController release], _accountPickerPopoverController = nil;
-    
+
 //    NSLog(@"DEALLOC DEFacebookComposeViewController");
-    
+
     [super dealloc];
 }
 
@@ -210,16 +210,16 @@ enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     [self setCancelButtonTitle:NSLocalizedString(@"Cancel",@"")];
     [self setSendButtonTitle:NSLocalizedString(@"Post",@"")];
 
     self.view.backgroundColor = [UIColor clearColor];
     self.textViewContainer.backgroundColor = [UIColor clearColor];
     self.textView.backgroundColor = [UIColor clearColor];
-    
-    
-    
+
+
+
     if ([UIDevice de_isIOS5]) {
         self.fromViewController = self.presentingViewController;
         self.textView.keyboardType = UIKeyboardTypeTwitter;
@@ -227,10 +227,10 @@ enum {
     else {
         self.fromViewController = self.parentController;
     }
-    
-    
-    
-    
+
+
+
+
         // Put the attachment frames and image views into arrays so they're easier to work with.
         // Order is important, so we can't use IB object arrays. Or at least this is easier.
     self.attachmentFrameViews = [NSArray arrayWithObjects:
@@ -238,34 +238,34 @@ enum {
                                  self.attachment2FrameView,
                                  self.attachment3FrameView,
                                  nil];
-    
+
     self.attachmentImageViews = [NSArray arrayWithObjects:
                                  self.attachment1ImageView,
                                  self.attachment2ImageView,
                                  self.attachment3ImageView,
                                  nil];
-    
+
         // Now add some angle to attachments 2 and 3.
     self.attachment2FrameView.transform = CGAffineTransformMakeRotation(degreesToRadians(-6.0f));
     self.attachment2ImageView.transform = CGAffineTransformMakeRotation(degreesToRadians(-6.0f));
     self.attachment3FrameView.transform = CGAffineTransformMakeRotation(degreesToRadians(-12.0f));
     self.attachment3ImageView.transform = CGAffineTransformMakeRotation(degreesToRadians(-12.0f));
-    
+
         // Mask the corners on the image views so they don't stick out of the frame.
     [self.attachmentImageViews enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop) {
         ((UIImageView *)obj).layer.cornerRadius = 3.0f;
         ((UIImageView *)obj).layer.masksToBounds = YES;
     }];
-    
+
     self.textView.text = self.text;
     [self.textView becomeFirstResponder];
-    
-    
 
-    
-    
+
+
+
+
     [self updateAttachments];
-    
+
     [self.navImage setNeedsDisplay];
 }
 
@@ -274,7 +274,7 @@ enum {
 {
     [super viewWillAppear:animated];
 
-    
+
         // Now let's fade in a gradient view over the presenting view.
     self.gradientView = [[[DEFacebookGradientView alloc] initWithFrame:[UIApplication sharedApplication].keyWindow.bounds] autorelease];
     self.gradientView.autoresizingMask = UIViewAutoresizingNone;
@@ -285,24 +285,24 @@ enum {
     [UIView animateWithDuration:0.3f
                      animations:^ {
                          self.gradientView.alpha = 1.0f;
-                     }];    
-    
+                     }];
+
     self.previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES]; 
-    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES];
+
     [self updateFramesForOrientation:self.interfaceOrientation];
-    
+
 }
 
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
+
     self.backgroundImageView.alpha = 1.0f;
     //self.backgroundImageView.frame = [self.view convertRect:self.backgroundImageView.frame fromView:[UIApplication sharedApplication].keyWindow];
     [self.view insertSubview:self.gradientView aboveSubview:self.backgroundImageView];
-    
+
     CAShapeLayer *maskLayer = [CAShapeLayer layer];
     UIBezierPath *roundedPath = [UIBezierPath bezierPathWithRoundedRect:self.navImage.bounds
                                                       byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight
@@ -319,13 +319,13 @@ enum {
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
+
     UIView *presentingView = [UIDevice de_isIOS5] ? self.fromViewController.view : self.parentController.view;
     [presentingView addSubview:self.gradientView];
-    
+
     [self.backgroundImageView removeFromSuperview];
     self.backgroundImageView = nil;
-    
+
     [UIView animateWithDuration:0.3f
                      animations:^ {
                          self.gradientView.alpha = 0.0f;
@@ -333,7 +333,7 @@ enum {
                      completion:^(BOOL finished) {
                          [self.gradientView removeFromSuperview];
                      }];
-    
+
     [[UIApplication sharedApplication] setStatusBarStyle:self.previousStatusBarStyle animated:YES];
 }
 
@@ -347,7 +347,7 @@ enum {
     if ([self.parentController respondsToSelector:@selector(shouldAutorotateToInterfaceOrientation:)]) {
         return [self.parentController shouldAutorotateToInterfaceOrientation:interfaceOrientation];
     }
-    
+
     if ([UIDevice de_isPhone]) {
         return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
     }
@@ -360,11 +360,11 @@ enum {
 - (NSUInteger)supportedInterfaceOrientations
 {
     if (self.orientationPortait) return UIInterfaceOrientationMaskPortrait;
-    
+
     if ([self.parentController respondsToSelector:@selector(supportedInterfaceOrientations)]) {
         return (NSUInteger)[self.parentController performSelector:@selector(supportedInterfaceOrientations)];
     }
-    
+
     if ([UIDevice de_isPhone]) {
         return UIInterfaceOrientationMaskAllButUpsideDown;
     }
@@ -401,10 +401,10 @@ enum {
         //  _images
         //  _urls
         //  _twitterAccount
-    
+
         // Save the text.
     self.text = self.textView.text;
-    
+
         // IBOutlets
     self.cardView = nil;
     self.titleLabel = nil;
@@ -421,14 +421,14 @@ enum {
     self.attachment2ImageView = nil;
     self.attachment3ImageView = nil;
     self.characterCountLabel = nil;
-    
+
         // Private
     self.attachmentFrameViews = nil;
     self.attachmentImageViews = nil;
     self.gradientView = nil;
     self.accountPickerView = nil;
     self.accountPickerPopoverController = nil;
-    
+
     [self setNavImage:nil];
     [super viewDidUnload];
 }
@@ -441,10 +441,10 @@ enum {
     if ([self isPresented]) {
         return NO;
     }
-    
+
     self.text = initialText;  // Keep a copy in case the view isn't loaded yet.
     self.textView.text = self.text;
-    
+
     return YES;
 }
 
@@ -452,15 +452,15 @@ enum {
 - (BOOL)addImage:(UIImage *)image
 {
     [self.images removeAllObjects];
-    
+
     if (image == nil) {
         return NO;
     }
-    
+
     if ([self isPresented]) {
         return NO;
     }
-        
+
     [self.images addObject:image];
     return YES;
 }
@@ -480,7 +480,7 @@ enum {
     if ([self isPresented]) {
         return NO;
     }
-    
+
     [self.images removeAllObjects];
     return YES;
 }
@@ -492,7 +492,7 @@ enum {
     if (url == nil) {
         return NO;
     }
-    
+
     [self.urls addObject:url];
     return YES;
 }
@@ -503,12 +503,12 @@ enum {
 #pragma mark - Private
 
 - (void)updateFramesForOrientation:(UIInterfaceOrientation)interfaceOrientation
-{    
+{
     CGFloat buttonHorizontalMargin = 8.0f;
     CGFloat cardWidth, cardTop, cardHeight, cardHeaderLineTop, buttonTop;
     UIImage *cancelButtonImage, *sendButtonImage;
     CGFloat titleLabelFontSize, titleLabelTop;
-    
+
     if ([UIDevice de_isPhone]) {
         cardWidth = CGRectGetWidth(self.view.bounds) - 10.0f;
         if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
@@ -548,56 +548,56 @@ enum {
             cardTop = 110.0f;
         }
     }
-    
+
     CGFloat cardLeft = trunc((CGRectGetWidth(self.view.bounds) - cardWidth) / 2);
     self.cardView.frame = CGRectMake(cardLeft, cardTop, cardWidth, cardHeight);
-    
+
     self.navImage.frame = CGRectMake(0, 0, cardWidth, 44);
-    
+
     self.titleLabel.font = [UIFont boldSystemFontOfSize:titleLabelFontSize];
     self.titleLabel.frame = CGRectMake(0.0f, titleLabelTop, cardWidth, self.titleLabel.frame.size.height);
-    
+
     [self.cancelButton setBackgroundImage:cancelButtonImage forState:UIControlStateNormal];
     self.cancelButton.frame = CGRectMake(buttonHorizontalMargin, buttonTop, self.cancelButton.frame.size.width, cancelButtonImage.size.height);
-    
+
     [self.sendButton setBackgroundImage:sendButtonImage forState:UIControlStateNormal];
     self.sendButton.frame = CGRectMake(self.cardView.bounds.size.width - buttonHorizontalMargin - self.sendButton.frame.size.width, buttonTop, self.sendButton.frame.size.width, sendButtonImage.size.height);
-    
+
     self.cardHeaderLineView.frame = CGRectMake(0.0f, cardHeaderLineTop, self.cardView.bounds.size.width, self.cardHeaderLineView.frame.size.height);
-    
+
     CGFloat textWidth = CGRectGetWidth(self.cardView.bounds);
     if ([self attachmentsCount] > 0) {
         textWidth -= CGRectGetWidth(self.attachment1FrameView.frame) + 10.0f;  // Got to measure frame 1, because it's not rotated. Other frames are funky.
     }
     CGFloat textTop = CGRectGetMaxY(self.cardHeaderLineView.frame) - 1.0f;
-    
-    
+
+
     CGFloat textHeight = self.cardView.bounds.size.height - textTop - 30.0f;
     self.textViewContainer.frame = CGRectMake(0.0f, textTop, self.cardView.bounds.size.width, textHeight);
     self.textView.frame = CGRectMake(0.0f, 6.0f, textWidth, self.textViewContainer.frame.size.height-6);
     self.textView.scrollIndicatorInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, -(self.cardView.bounds.size.width - textWidth - 1.0f));
-    
+
     self.paperClipView.frame = CGRectMake(CGRectGetMaxX(self.cardView.frame) - self.paperClipView.frame.size.width + 6.0f,
                                           CGRectGetMinY(self.cardView.frame) + CGRectGetMaxY(self.cardHeaderLineView.frame) - 1.0f,
                                           self.paperClipView.frame.size.width,
                                           self.paperClipView.frame.size.height);
-    
+
         // We need to position the rotated views by their center, not their frame.
         // This isn't elegant, but it is correct. Half-points are required because
         // some frame sizes aren't evenly divisible by 2.
     self.attachment1FrameView.center = CGPointMake(self.cardView.bounds.size.width - 45.0f, CGRectGetMaxY(self.paperClipView.frame) - cardTop + 18.0f);
     self.attachment1ImageView.center = CGPointMake(self.cardView.bounds.size.width - 45.5, self.attachment1FrameView.center.y - 2.0f);
-    
+
     self.attachment2FrameView.center = CGPointMake(self.attachment1FrameView.center.x - 4.0f, self.attachment1FrameView.center.y + 5.0f);
     self.attachment2ImageView.center = CGPointMake(self.attachment1ImageView.center.x - 4.0f, self.attachment1ImageView.center.y + 5.0f);
-    
+
     self.attachment3FrameView.center = CGPointMake(self.attachment2FrameView.center.x - 4.0f, self.attachment2FrameView.center.y + 5.0f);
     self.attachment3ImageView.center = CGPointMake(self.attachment2ImageView.center.x - 4.0f, self.attachment2ImageView.center.y + 5.0f);
-    
+
     self.gradientView.frame = self.gradientView.superview.bounds;
-    
+
     [FBSession openActiveSessionWithAllowLoginUI:NO];
-    
+
     if (![FBSession.activeSession isOpen]) {
         [self setSendButtonTitle:NSLocalizedString(@"Log in",@"")];
     }
@@ -630,28 +630,28 @@ enum {
         frame.size.width = self.cardView.frame.size.width;
     }
     self.textView.frame = frame;
-    
+
         // Create a array of attachment images to display.
     NSMutableArray *attachmentImages = [NSMutableArray arrayWithArray:self.images];
     for (NSInteger index = 0; index < [self.urls count]; index++) {
         [attachmentImages addObject:[UIImage imageNamed:@"DEFacebookURLAttachment"]];
     }
-    
+
     self.paperClipView.hidden = YES;
     self.attachment1FrameView.hidden = YES;
     self.attachment2FrameView.hidden = YES;
     self.attachment3FrameView.hidden = YES;
-    
+
     if ([attachmentImages count] >= 1) {
         self.paperClipView.hidden = NO;
         self.attachment1FrameView.hidden = NO;
         self.attachment1ImageView.image = [attachmentImages objectAtIndex:0];
-        
+
         if ([attachmentImages count] >= 2) {
             self.paperClipView.hidden = NO;
             self.attachment2FrameView.hidden = NO;
             self.attachment2ImageView.image = [attachmentImages objectAtIndex:1];
-            
+
             if ([attachmentImages count] >= 3) {
                 self.paperClipView.hidden = NO;
                 self.attachment3FrameView.hidden = NO;
@@ -668,14 +668,14 @@ enum {
 
 - (IBAction)send
 {
-    
+
     if (![FBSession.activeSession isOpen]) {
-        
+
         FBSession *session = [[FBSession alloc] initWithAppID:nil
                                                   permissions:[NSArray arrayWithObjects:@"publish_stream", nil]
                                               urlSchemeSuffix:self.urlSchemeSuffix
                                            tokenCacheStrategy:nil];
-        
+
         [FBSession setActiveSession:session];
         [session openWithCompletionHandler:
          ^(FBSession *session, FBSessionState state, NSError *error) {
@@ -687,13 +687,13 @@ enum {
              }
          }];
         [session release];
-        
+
         return;
     }
-    
-    
+
+
     self.sendButton.enabled = NO;
-        
+
     UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     [activity setCenter:CGPointMake(_sendButton.frame.size.width/2, _sendButton.frame.size.height/2)];
     [self setSendButtonTitle:@""];
@@ -701,7 +701,7 @@ enum {
     [activity startAnimating];
     [activity release];
     self.view.userInteractionEnabled = NO;
-    
+
     NSMutableDictionary *d = nil;
     if ( [self.urls count] > 0 && [self.images count] > 0 ) {
         d = [NSMutableDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@\n%@",self.textView.text,[[self.urls lastObject] absoluteString]]
@@ -710,20 +710,20 @@ enum {
         d = [NSMutableDictionary dictionaryWithObject:self.textView.text
                                                forKey:@"message"];
     }
-    
+
     NSString *graphPath = @"me/feed";
-    
-    
-    
+
+
+
     if ([self.urls count] > 0) {
         [d setObject:[[self.urls lastObject] absoluteString] forKey:@"link"];
     }
-    
+
     if ([self.images count] > 0) {
         [d setObject:UIImagePNGRepresentation([self.images lastObject]) forKey:@"source"];
         graphPath = @"me/photos";
     }
-    
+
     if ([self.customParameters count] > 0) {
         [d addEntriesFromDictionary:self.customParameters];
     }
@@ -734,17 +734,17 @@ enum {
                                                   graphPath:graphPath
                                                  parameters:d
                                                  HTTPMethod:@"POST"];
-    
+
     [newConnection addRequest:request completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (error)
         {
 //            NSLog(@"    error");
-            
+
             // remove activity
             [[[self.sendButton subviews] lastObject] removeFromSuperview];
             [self setSendButtonTitle:NSLocalizedString(@"Post",@"")];
             self.view.userInteractionEnabled = YES;
-            
+
             UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cannot Send Message", @"")
                                                                  message:[NSString stringWithFormat:NSLocalizedString(@"The message, \"%@\" cannot be sent because the connection to Facebook failed.", @""), self.textView.text]
                                                                 delegate:self
@@ -752,22 +752,22 @@ enum {
                                                        otherButtonTitles:NSLocalizedString(@"Try Again", @""), nil] autorelease];
             alertView.tag = DEFacebookComposeViewControllerCannotSendAlert;
             [alertView show];
-            
+
             self.sendButton.enabled = YES;
-            
-            
+
+
         }
         else
         {
             CGFloat yOffset = -(self.view.bounds.size.height + CGRectGetMaxY(self.cardView.frame) + 10.0f);
-            
+
             [UIView animateWithDuration:0.35f
                              animations:^ {
                                  self.cardView.frame = CGRectOffset(self.cardView.frame, 0.0f, yOffset);
                                  self.paperClipView.frame = CGRectOffset(self.paperClipView.frame, 0.0f, yOffset);
                              }];
-            
-            
+
+
             if (self.completionHandler) {
                 self.completionHandler(DEFacebookComposeViewControllerResultDone);
             }
@@ -778,7 +778,7 @@ enum {
 //            NSLog(@"   ok");
         };
     }];
-    
+
     [newConnection start];
     [request release];
 }
@@ -824,7 +824,7 @@ enum {
 {
     float currentVersion = 5.0;
     float sysVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
-    
+
     if (sysVersion >= currentVersion) {
         // iOS 5.0 or later version of iOS specific functionality hanled here
         return self.presentingViewController;
@@ -855,13 +855,13 @@ enum {
 - (void)autoSizeButton:(UIButton *)button right:(BOOL)right
 {
     NSString *title = button.titleLabel.text;
-    
+
     CGSize s = [title sizeWithFont:button.titleLabel.font];
     s.width += 14.f; // padding
-    
+
     CGRect frame = button.frame;
     CGFloat offset = s.width - frame.size.width;
-    
+
     if (right) frame.origin.x -= offset;
     frame.size.width = s.width;
     button.frame = frame;
