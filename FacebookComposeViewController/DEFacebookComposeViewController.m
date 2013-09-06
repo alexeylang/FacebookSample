@@ -596,8 +596,6 @@ enum {
 
     self.gradientView.frame = self.gradientView.superview.bounds;
 
-    [FBSession openActiveSessionWithAllowLoginUI:NO];
-
     if (![FBSession.activeSession isOpen]) {
         [self setSendButtonTitle:NSLocalizedString(@"Log in",@"")];
     }
