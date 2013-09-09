@@ -666,30 +666,6 @@ enum {
 
 - (IBAction)send
 {
-
-    if (![FBSession.activeSession isOpen]) {
-
-        FBSession *session = [[FBSession alloc] initWithAppID:nil
-                                                  permissions:[NSArray arrayWithObjects:@"publish_stream", nil]
-                                              urlSchemeSuffix:self.urlSchemeSuffix
-                                           tokenCacheStrategy:nil];
-
-        [FBSession setActiveSession:session];
-        [session openWithCompletionHandler:
-         ^(FBSession *session, FBSessionState state, NSError *error) {
-             if (error) {
-//                 NSLog(@"Connection error: %@ - %@", error.localizedDescription, error.userInfo);
-             } else {
-                 [FBSession setActiveSession:session];
-                 [self setSendButtonTitle:NSLocalizedString(@"Post",@"")];
-             }
-         }];
-        [session release];
-
-        return;
-    }
-
-
     self.sendButton.enabled = NO;
 
     UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
