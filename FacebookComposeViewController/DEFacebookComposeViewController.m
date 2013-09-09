@@ -806,12 +806,25 @@ enum {
     // This gets called if there's an error sending the tweet.
 {
     if (alertView.tag == DEFacebookComposeViewControllerNoAccountsAlert) {
-        [self dismissModalViewControllerAnimated:YES];
+        if (self.completionHandler) {
+            self.completionHandler(DEFacebookComposeViewControllerResultFailed);
+        }
+        else {
+            [self dismissModalViewControllerAnimated:YES];
+        }
     }
     else if (alertView.tag == DEFacebookComposeViewControllerCannotSendAlert) {
         if (buttonIndex == 1) {
                 // The user wants to try again.
             [self send];
+        }
+        else {
+            if (self.completionHandler) {
+                self.completionHandler(DEFacebookComposeViewControllerResultFailed);
+            }
+            else {
+                [self dismissModalViewControllerAnimated:YES];
+            }
         }
     }
 }
