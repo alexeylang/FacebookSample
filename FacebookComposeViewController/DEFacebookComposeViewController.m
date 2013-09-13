@@ -270,10 +270,71 @@ enum {
 }
 
 
+- (UIImage *) captureScreen {
+    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+    CGRect rect = [keyWindow bounds];
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    if (![[UIApplication sharedApplication] isStatusBarHidden]) {
+        CGFloat statusBarOffset = -20.0f;
+        if ( UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication]statusBarOrientation]))
+        {
+            CGContextTranslateCTM(context,statusBarOffset, 0.0f);
+
+        }else
+        {
+            CGContextTranslateCTM(context, 0.0f, statusBarOffset);
+        }
+    }
+
+    [keyWindow.layer renderInContext:context];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    UIImageOrientation imageOrientation;
+    switch ([UIApplication sharedApplication].statusBarOrientation) {
+        case UIInterfaceOrientationLandscapeLeft:
+            imageOrientation = UIImageOrientationRight;
+            break;
+        case UIInterfaceOrientationLandscapeRight:
+            imageOrientation = UIImageOrientationLeft;
+            break;
+        case UIInterfaceOrientationPortrait:
+            imageOrientation = UIImageOrientationUp;
+            break;
+        case UIInterfaceOrientationPortraitUpsideDown:
+            imageOrientation = UIImageOrientationDown;
+            break;
+        default:
+            break;
+    }
+
+    UIImage *outputImage = [[[UIImage alloc] initWithCGImage: image.CGImage
+                                                       scale: 1.0
+                                                 orientation: imageOrientation] autorelease];
+    return outputImage;
+}
+
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 
+    // Take a snapshot of the current view, and make that our background after our view animates into place.
+    // This only works if our orientation is the same as the presenting view.
+    // If they don't match, just display the gray background.
+    if (self.interfaceOrientation == self.fromViewController.interfaceOrientation) {
+        UIImage *backgroundImage = [self captureScreen];
+        self.backgroundImageView = [[[UIImageView alloc] initWithImage:backgroundImage] autorelease];
+    }
+    else {
+        self.backgroundImageView = [[[UIImageView alloc] initWithFrame:self.fromViewController.view.bounds] autorelease];
+    }
+    self.backgroundImageView.autoresizingMask = UIViewAutoresizingNone;
+    self.backgroundImageView.alpha = 0.0f;
+    self.backgroundImageView.backgroundColor = [UIColor lightGrayColor];
+    [self.view insertSubview:self.backgroundImageView atIndex:0];
 
         // Now let's fade in a gradient view over the presenting view.
     self.gradientView = [[[DEFacebookGradientView alloc] initWithFrame:[UIApplication sharedApplication].keyWindow.bounds] autorelease];
